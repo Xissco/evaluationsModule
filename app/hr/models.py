@@ -23,7 +23,7 @@ class Job(BaseModel):
 
 
 class Manager(BaseModel):
-    job = models.ForeignKey(Job, verbose_name='Coordinador', on_delete=models.CASCADE, null=True)
+    job = models.OneToOneField(Job, verbose_name='Coordinador', on_delete=models.CASCADE, null=True)
 
     class Meta:
         verbose_name = "coordinador"
@@ -36,7 +36,7 @@ class Manager(BaseModel):
 
 class Department(BaseModel):
     name = models.CharField(max_length=100, verbose_name='Departamento')
-    manager = models.ForeignKey(Manager, verbose_name='Responsable', on_delete=models.CASCADE, null=True)
+    manager = models.OneToOneField(Manager, verbose_name='Responsable', on_delete=models.CASCADE, null=True)
 
     class Meta:
         verbose_name = "departamento"
