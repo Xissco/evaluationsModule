@@ -1,0 +1,63 @@
+{% extends 'core/base.html' %}
+
+{% block title %} Quiz State {% endblock %}
+
+{% block header %} Estado de Evaluaciones {% endblock %}
+
+{% block content %}
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            {% if pendings == 0 %}
+                                <h3 class="card-title">No tiene evaluaciones pendientes</h3>
+                            {% else %}
+                                <h3 class="card-title">Hay {{ pendings }} evaluaciones pendientes</h3>
+                            {% endif %}
+                        </div>
+
+                        <div class="card-body">
+                            <table id="example2" class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Evaluador</th>
+                                        <th>Tipo</th>
+                                        <th>Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for evaluation in evaluations %}
+                                        <tr class="table-secondary">
+{#                                            <td colspan="4"><a href="{% url 'Evaluations Result' evaluation.id %}"><strong>{{ evaluation.career }} - {{ evaluation.subject.name }}</strong></a></td>#}
+                                            <td colspan="4"><strong>{{ evaluation.evaluated.job }} - {{ evaluation.evaluated }}</strong></td>
+                                        </tr>
+                                    {% for quiz in evaluation.quizes.all %}
+                                        <tr>
+                                            <td>{{ quiz.evaluator }}</td>
+                                            <td>{{ quiz.quiz_type }}</td>
+                                            {% if quiz.getState == 'Pendiente' %}
+                                                <td><span class="badge badge-danger">{{ quiz.getState }}</span></td>
+                                            {% else %}
+                                                <td><span class="badge badge-success">{{ quiz.getState }}</span></td>
+                                            {% endif %}
+                                        </tr>
+                                    {% endfor %}
+                                {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>Evaluador</th>
+                                        <th>Tipo</th>
+                                        <th>Estado</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

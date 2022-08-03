@@ -63,4 +63,4 @@ class Employee(BaseModel):
         ordering = ["created"]
 
     def __str__(self):
-        return self.name
+        return self.name + " " + self.lastname

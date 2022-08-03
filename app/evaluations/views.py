@@ -13,13 +13,13 @@ def quizSelector(request):
     return render(request, 'evaluations/quizSelector.html', context)
 
 
-# def quizState(request):
-#     evaluations = Evaluation.objects.all()
-#     pendings = len(Quiz.objects.all().filter(quiz_state=1))
-#     context = {'evaluations': evaluations, 'pendings': pendings}
-#     return render(request, 'evaluations/quizState.html', context)
-#
-#
+def quizState(request):
+    evaluations = Evaluation.objects.all()
+    pendings = len(Quiz.objects.all().filter(quiz_state=1))
+    context = {'evaluations': evaluations, 'pendings': pendings}
+    return render(request, 'evaluations/quizState.html', context)
+
+
 def quiz(request, quiz_id):
     if request.method == 'POST':
         keys = [key for key, value in request.POST.items() if 'csrf' not in key]
@@ -73,12 +73,12 @@ def quizCreator(request):
 
 # def evaluationResult(request, evaluation_id):
 #     evaluation = get_object_or_404(Evaluation, id=evaluation_id)
-#     matrix = []
-#     categories = QuestionType.objects.all()
-#     totals = evaluation.getCategoryScore
-#     for category in categories:
-#         for quiz in evaluation.quizes.all():
-#             categoryScore = quiz.getCategoryScore
-#             matrix.append([category.name, quiz.quiz_type.name, quiz.quiz_type.getWeight.filter(question_type=category).first().weight * 100 ,categoryScore[category.name], round(categoryScore[category.name]*20, 2)])
-#         matrix.append([category.name, "Total", "", totals[category.name], round(totals[category.name] * 20, 2)])
-#     return render(request, 'evaluations/evaluationresult.html', {'evaluation': evaluation, 'matrix': matrix})
+    # matrix = []
+    # categories = QuestionType.objects.all()
+    # totals = evaluation.getCategoryScore
+    # for category in categories:
+    #     for quiz in evaluation.quizes.all():
+    #         categoryScore = quiz.getCategoryScore
+    #         matrix.append([category.name, quiz.quiz_type.name, quiz.quiz_type.getWeight.filter(question_type=category).first().weight * 100 ,categoryScore[category.name], round(categoryScore[category.name]*20, 2)])
+    #     matrix.append([category.name, "Total", "", totals[category.name], round(totals[category.name] * 20, 2)])
+    # return render(request, 'evaluations/evaluationresult.html', {'evaluation': evaluation})
