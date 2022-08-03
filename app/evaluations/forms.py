@@ -45,6 +45,8 @@ class quizForm(forms.ModelForm):
             quiz = Quiz.objects.get(quiz_type=quiz_type, evaluation=evaluation, evaluator=evaluator)
         except Quiz.DoesNotExist:
             quiz = None
+        except Evaluation.DoesNotExist:
+            quiz = None
         if quiz:
             raise forms.ValidationError("Ya existe una encuesta con esos datos.")
         return super(quizForm, self).clean(*args, **kwargs)

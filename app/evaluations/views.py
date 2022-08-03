@@ -20,21 +20,37 @@ def quizSelector(request):
 #     return render(request, 'evaluations/quizState.html', context)
 #
 #
-# def quiz(request, quiz_id):
-#     if request.method == 'POST':
-#         keys = [key for key, value in request.POST.items() if 'csrf' not in key]
-#         quiz_id = request.POST.get(keys.pop(0))
-#         while len(keys):
-#             answerValue = request.POST.get(keys.pop(0))
-#             answer = Answer(id=request.POST.get(keys.pop(0)), value=answerValue)
-#             answer.save(update_fields=["value"])
-#         quiz = Quiz.objects.filter(id=quiz_id).first()
-#         quiz.quiz_state = 2
-#         quiz.save(update_fields=["quiz_state"])
-#         return redirect('/evaluations/quizselector')
-#     else:
-#         quizes = get_object_or_404(Quiz, id=quiz_id)
-#         return render(request, 'evaluations/quiz.html', {'quiz': quizes})
+def quiz(request, quiz_id):
+    if request.method == 'POST':
+        keys = [key for key, value in request.POST.items() if 'csrf' not in key]
+        quiz_id = request.POST.get(keys.pop(0))
+        quizScore = 0
+        while len(keys):
+            answerValue = int(request.POST.get(keys.pop(0))) * 12.5 / 3.0
+            quizScore += answerValue
+            answer = Answer(id=request.POST.get(keys.pop(0)), value=answerValue)
+            answer.save(update_fields=["value"])
+        quiz = Quiz.objects.get(id=quiz_id)
+        quiz.quiz_state = 2
+        quiz.score = quizScore
+        quiz.save(update_fields=["quiz_state", "score"])
+        pendingQuiz = False
+        quizes = quiz.evaluation.quizes.all()
+        for quiz in quizes:
+            if quiz.getState == 'Pendiente':
+                pendingQuiz = True
+                break
+        totalScore = 0
+        if not pendingQuiz:
+            for quiz in quizes:
+                totalScore += quiz.score
+            totalScore = totalScore/len(quizes)
+            quiz.evaluation.score = totalScore
+            quiz.evaluation.save(update_fields=["score"])
+        return redirect('/evaluations/quizselector')
+    else:
+        quizes = get_object_or_404(Quiz, id=quiz_id)
+        return render(request, 'evaluations/quiz.html', {'quiz': quizes})
 
 
 def quizCreator(request):

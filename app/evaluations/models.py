@@ -88,7 +88,7 @@ class QuizType(BaseModel):
 
 class Quiz(BaseModel):
     quiz_type = models.ForeignKey(QuizType, verbose_name="Tipo de Evaluacion", on_delete=models.CASCADE)
-    evaluation = models.ForeignKey(Evaluation, verbose_name='Evaluación', on_delete=models.CASCADE)
+    evaluation = models.ForeignKey(Evaluation, verbose_name='Evaluación', on_delete=models.CASCADE, related_name='quizes')
     evaluator = models.ForeignKey(Employee, verbose_name='Evaluador', on_delete=models.CASCADE)
     quiz_state = models.CharField(max_length=100, choices=(('1', 'Pendiente'), ('2', 'Realizado')), default='1')
     score = models.DecimalField(max_digits=4, decimal_places=2, default=0, verbose_name='Total')
@@ -98,8 +98,12 @@ class Quiz(BaseModel):
         verbose_name_plural = "Encuestas"
         ordering = ["created"]
 
+    @property
+    def getState(self):
+        return 'Pendiente' if self.quiz_state == "1" else 'Realizado'
+
 
 class Answer(BaseModel):
-    quiz = models.ForeignKey(Quiz, verbose_name="Encuesta", on_delete=models.CASCADE)
+    quiz = models.ForeignKey(Quiz, verbose_name="Encuesta", on_delete=models.CASCADE, related_name="answer")
     question = models.ForeignKey(Question, verbose_name="Pregunta", on_delete=models.CASCADE)
     value = models.DecimalField(max_digits=4, decimal_places=2, default=0, verbose_name='Valor', null=True, blank=True)
