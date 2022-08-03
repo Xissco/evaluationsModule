@@ -19,6 +19,8 @@ class QuestionCategory(BaseModel):
         verbose_name_plural = "Categorias de Preguntas"
         ordering = ["created"]
 
+    def __str__(self):
+        return self.name
 
 class QuestionSection(BaseModel):
     name = models.CharField(max_length=100, verbose_name='Seccion')
@@ -29,6 +31,9 @@ class QuestionSection(BaseModel):
         verbose_name_plural = "Secciones de Preguntas"
         ordering = ["created"]
 
+    def __str__(self):
+        return self.name
+
 
 class Question(BaseModel):
     content = models.TextField(verbose_name='Enunciado')
@@ -38,6 +43,9 @@ class Question(BaseModel):
         verbose_name = "Pregunta"
         verbose_name_plural = "Preguntas"
         ordering = ["created"]
+
+    def __str__(self):
+        return self.content
 
 
 class EvaluationProcess(BaseModel):
@@ -50,6 +58,9 @@ class EvaluationProcess(BaseModel):
         verbose_name = "Proceso de Evaluación"
         verbose_name_plural = "Procesos de Evaluación"
         ordering = ["created"]
+
+    def __str__(self):
+        return self.name
 
 
 class Evaluation(BaseModel):
@@ -70,6 +81,9 @@ class QuizType(BaseModel):
         verbose_name = "Tipo de Evaluacion"
         verbose_name_plural = "Tipos de Evaluacion"
         ordering = ["created"]
+
+    def __str__(self):
+        return self.name
 
 
 class Quiz(BaseModel):
