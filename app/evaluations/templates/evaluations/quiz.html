@@ -5,6 +5,29 @@
 {% block header %} FORMULARIO DE EVALUACION DEL DESEMPEÑO 2022 FUNCIONARIOS ADMINISTRATIVO. {% endblock %}
 
 {% block content %}
+        <table class="table table-borderless">
+        <tbody>
+            <tr>
+                <th>Nombre del Evaluado/a</th>
+                <td>{{ quiz.evaluation.evaluated }}</td>
+                <th>Cargo con el que se evalua</th>
+                <td>{{ quiz.evaluation.evaluated.job }}</td>
+            </tr>
+            <tr>
+                <th>Cedula</th>
+                <td>{{ quiz.evaluation.evaluated.employee_id }}</td>
+                <th>Fecha de Ingreso</th>
+                <td>{{ quiz.evaluation.evaluated.hire_date }}</td>
+            </tr>
+            <tr>
+                <th>Jefe Inmediato</th>
+                <td>{{ quiz.evaluator }}</td>
+                <th>Unidad/Area</th>
+                <td>{{ quiz.evaluation.evaluated.departament }}</td>
+            </tr>
+
+        </tbody>
+    </table>
     <section class="content">
       <div class="container-fluid">
         <div class="row">
