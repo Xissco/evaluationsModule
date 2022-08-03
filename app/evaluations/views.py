@@ -2,16 +2,17 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Evaluation, Quiz, Answer
 from .forms import quizForm
-
+from hr.models import Employee
 
 # Create your views here.
-# def quizSelector(request):
-#     quizes = Quiz.objects.filter(evaluator=request.user)
-#     pendings = len(Quiz.objects.filter(evaluator=request.user).filter(quiz_state=1))
-#     context = {'quizes': quizes, 'pendings': pendings}
-#     return render(request, 'evaluations/quizSelector.html', context)
-#
-#
+def quizSelector(request):
+    evaluator = Employee.objects.get(user=request.user)
+    quizes = Quiz.objects.filter(evaluator=evaluator)
+    pendings = len(Quiz.objects.filter(evaluator=evaluator).filter(quiz_state=1))
+    context = {'quizes': quizes, 'pendings': pendings}
+    return render(request, 'evaluations/quizSelector.html', context)
+
+
 # def quizState(request):
 #     evaluations = Evaluation.objects.all()
 #     pendings = len(Quiz.objects.all().filter(quiz_state=1))
