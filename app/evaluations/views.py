@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404, redirect
-# from .models import Evaluation, Quiz, QuestionType, Answer
+from .models import Evaluation, Quiz, Answer
 from .forms import quizForm
 
 
@@ -38,22 +38,21 @@ from .forms import quizForm
 
 def quizCreator(request):
     form = quizForm(request.POST or None)
-    # if form.is_valid():
-    #     subject = form.cleaned_data.get("subject")
-    #     evaluator = form.cleaned_data.get("evaluator")
-    #     quiz_type = form.cleaned_data.get("quiz_type")
-    #     period = form.cleaned_data.get("period")
-    #     evaluation, created = Evaluation.objects.get_or_create(subject=subject, period=period)
-    #     quiz = Quiz(subject=subject, evaluation=evaluation, evaluator=evaluator, quiz_type=quiz_type, period=period,
-    #                 quiz_state=1)
-    #     quiz.save()
-    #     for section in form.cleaned_data.get("question_sections"):
-    #         for question in section.question.all():
-    #             answer = Answer(quiz=quiz, question=question)
-    #             answer.save()
-    #     return redirect('/evaluations/quizstate')
-    # else:
-    return render(request, 'evaluations/quizCreator.html', {'form': form})
+    if form.is_valid():
+        employee = form.cleaned_data.get("employee")
+        evaluator = form.cleaned_data.get("evaluator")
+        quiz_type = form.cleaned_data.get("quiz_type")
+        evaluation_process = form.cleaned_data.get("evaluation_process")
+        evaluation, created = Evaluation.objects.get_or_create(evaluated=employee, evaluation_process=evaluation_process)
+        quiz = Quiz(quiz_type=quiz_type, evaluation=evaluation, evaluator=evaluator, quiz_state=1)
+        quiz.save()
+        for section in form.cleaned_data.get("question_section"):
+            for question in section.question.all():
+                answer = Answer(quiz=quiz, question=question)
+                answer.save()
+        return redirect('/evaluations/quizstate')
+    else:
+        return render(request, 'evaluations/quizCreator.html', {'form': form})
 
 # def evaluationResult(request, evaluation_id):
 #     evaluation = get_object_or_404(Evaluation, id=evaluation_id)

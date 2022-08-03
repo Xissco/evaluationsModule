@@ -37,7 +37,7 @@ class QuestionSection(BaseModel):
 
 class Question(BaseModel):
     content = models.TextField(verbose_name='Enunciado')
-    question_section = models.ForeignKey(QuestionSection, verbose_name='Seccion', on_delete=models.CASCADE)
+    question_section = models.ForeignKey(QuestionSection, verbose_name='Seccion', on_delete=models.CASCADE, related_name='question')
 
     class Meta:
         verbose_name = "Pregunta"
@@ -66,7 +66,7 @@ class EvaluationProcess(BaseModel):
 class Evaluation(BaseModel):
     evaluation_process = models.ForeignKey(EvaluationProcess, verbose_name='Procesos de Evaluación', on_delete=models.CASCADE)
     evaluated = models.ForeignKey(Employee, verbose_name='Evaluado', on_delete=models.CASCADE)
-    score = models.DecimalField(max_digits=4, decimal_places=2, verbose_name='Total')
+    score = models.DecimalField(max_digits=4, decimal_places=2, verbose_name='Total', null=True, blank=True)
 
     class Meta:
         verbose_name = "Evaluacion"
@@ -100,7 +100,6 @@ class Quiz(BaseModel):
 
 
 class Answer(BaseModel):
-    content = models.CharField(max_length=100, verbose_name="Respuesta")
     quiz = models.ForeignKey(Quiz, verbose_name="Encuesta", on_delete=models.CASCADE)
     question = models.ForeignKey(Question, verbose_name="Pregunta", on_delete=models.CASCADE)
-    value = models.DecimalField(max_digits=4, decimal_places=2, default=0, verbose_name='Valor')
+    value = models.DecimalField(max_digits=4, decimal_places=2, default=0, verbose_name='Valor', null=True, blank=True)
