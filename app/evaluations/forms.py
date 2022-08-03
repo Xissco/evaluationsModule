@@ -1,5 +1,5 @@
 from django import forms
-from .models import Quiz, QuestionSection, EvaluationProcess
+from .models import Evaluation, Quiz, QuestionSection, EvaluationProcess
 from hr.models import Employee
 
 
@@ -35,14 +35,16 @@ class quizForm(forms.ModelForm):
         self.fields['quiz_type'].widget.attrs.update({'class': 'form-control'})
 
 
-    # def clean(self, *args, **kwargs):
-    #     subject = self.cleaned_data.get("subject")
-    #     quiz_type = self.cleaned_data.get("quiz_type")
-    #     period = self.cleaned_data.get("period")
-    #     try:
-    #         quiz = Quiz.objects.get(subject=subject, quiz_type=quiz_type, period=period)
-    #     except Quiz.DoesNotExist:
-    #         quiz = None
-    #     if quiz:
-    #         raise forms.ValidationError("Ya existe una encuesta con esos datos.")
-    #     return super(quizForm, self).clean(*args, **kwargs)
+    def clean(self, *args, **kwargs):
+        employee = self.cleaned_data.get("employee")
+        evaluator = self.cleaned_data.get("evaluator")
+        quiz_type = self.cleaned_data.get("quiz_type")
+        evaluation_process = self.cleaned_data.get("evaluation_process")
+        try:
+            evaluation = Evaluation.objects.get(evaluated=employee, evaluation_process=evaluation_process)
+            quiz = Quiz.objects.get(quiz_type=quiz_type, evaluation=evaluation, evaluator=evaluator)
+        except Quiz.DoesNotExist:
+            quiz = None
+        if quiz:
+            raise forms.ValidationError("Ya existe una encuesta con esos datos.")
+        return super(quizForm, self).clean(*args, **kwargs)
