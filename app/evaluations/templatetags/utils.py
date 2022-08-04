@@ -15,10 +15,11 @@ def getAnswerValue(answer, question):
 
 @register.filter()
 def getCategoryTotal(quiz, category):
+    TWOPLACES = decimal.Decimal(10) ** -2
     evaluation_process = quiz.evaluation.evaluation_process
     categoryScore = 0
     for section in evaluation_process.question_section.filter(question_category=category):
         for question in section.question.all():
             answer = Answer.objects.get(quiz=quiz, question=question)
             categoryScore += answer.value
-    return categoryScore * decimal.Decimal(25 / 6.0).quantize(decimal.Decimal("0.01"))
+    return (categoryScore * decimal.Decimal(25 / 6.0)).quantize(TWOPLACES)
