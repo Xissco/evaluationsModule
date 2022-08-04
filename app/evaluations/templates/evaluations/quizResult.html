@@ -43,11 +43,16 @@
                             <table class="table table-bordered ">
                             <tbody>
                             <tr class="table-secondary">
-                                <td colspan="2"><strong>{{ category }}</strong></td>
+                                <td colspan="2"><strong>{{ category }} (50%)</strong></td>
                             </tr>
                             {% for section in category.section.all %}
                                 <tr class="table-secondary">
+                                    {% if forloop.first %}
+                                    <td>{{ section }}</td>
+                                    <td>Calificación</td>
+                                    {% else %}
                                     <td colspan="2">{{ section }}</td>
+                                    {% endif %}
                                 </tr>
                                 {% for question in section.question.all %}
                                     <tr>
@@ -66,7 +71,7 @@
                 <table class="table table-bordered ">
                     <tbody>
                         <tr class="table-secondary">
-                            <td colspan="4"><strong>Resultado General de la Evaluación del Desempeño (100%)</strong></td>
+                            <td colspan="4"><strong>RESULTADO DE LA EVALUACION (100%)</strong></td>
                         </tr>
                     <tr>
                         <td></td>
@@ -75,9 +80,14 @@
                         <td></td>
                     </tr>
                     <tr>
-                        <td colspan="4">Yo {{ quiz.evaluation.evaluated }} con Nro. de Cédula {{ quiz.evaluation.evaluated.employee_id }}</td>
-                        <td colspan="4">DECLARO HABER RECIBIDO LA RETROALIMENTACION SOBRE ESTE PROCESO DE EVALUACION, COMPROMETIENDO MIS ESFUERZOS A MEJORAR EN LO QUE CORRESPONDA</td>
-
+                        <td colspan="4">
+                            YO <strong>{{ quiz.evaluation.evaluated }}</strong> CON NRO. DE CEDULA <strong>{{ quiz.evaluation.evaluated.employee_id }}</strong>
+                            DECLARO HABER RECIBIDO LA RETROALIMENTACION SOBRE ESTE PROCESO DE EVALUACION, COMPROMETIENDO MIS ESFUERZOS A MEJORAR EN LO QUE CORRESPONDA
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="text-align: center"><br/><br/><br/>Firma del Evaluado: <br/>{{ quiz.evaluation.evaluated }}</td>
+                        <td colspan="2" style="text-align: center"><br/><br/><br/>Firma del Evaluador: <br/>{{ quiz.evaluator }}</td>
                     </tr>
                 </table>
                 </div>
