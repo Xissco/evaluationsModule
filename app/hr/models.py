@@ -54,6 +54,7 @@ class Employee(BaseModel):
     employee_id = models.CharField(max_length=10, verbose_name='Cedula')
     hire_date = models.DateField(verbose_name='Fecha de Ingreso')
     job = models.ForeignKey(Job, verbose_name='Puesto', on_delete=models.CASCADE, null=True)
+    isManager = models.BooleanField(verbose_name='Es coordinador?', default=False)
     departament = models.ForeignKey(Department, verbose_name='Departamento', on_delete=models.CASCADE, null=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 

@@ -74,12 +74,4 @@ def quizCreator(request):
 def quizResult(request, quiz_id):
     quiz = get_object_or_404(Quiz, id=quiz_id)
     answer = Answer.objects.filter(quiz=quiz)
-    # matrix = []
-    # categories = QuestionType.objects.all()
-    # totals = evaluation.getCategoryScore
-    # for category in categories:
-    #     for quiz in evaluation.quizes.all():
-    #         categoryScore = quiz.getCategoryScore
-    #         matrix.append([category.name, quiz.quiz_type.name, quiz.quiz_type.getWeight.filter(question_type=category).first().weight * 100 ,categoryScore[category.name], round(categoryScore[category.name]*20, 2)])
-    #     matrix.append([category.name, "Total", "", totals[category.name], round(totals[category.name] * 20, 2)])
     return render(request, 'evaluations/quizresult.html', {'quiz': quiz, 'answer': answer})
