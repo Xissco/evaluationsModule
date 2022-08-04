@@ -30,13 +30,12 @@
                                 <tbody>
                                     {% for evaluation in evaluations %}
                                         <tr class="table-secondary">
-{#                                            <td colspan="4"><a href="{% url 'Evaluations Result' evaluation.id %}"><strong>{{ evaluation.career }} - {{ evaluation.subject.name }}</strong></a></td>#}
                                             <td colspan="4"><strong>{{ evaluation.evaluated.job }} - {{ evaluation.evaluated }}</strong></td>
                                         </tr>
                                     {% for quiz in evaluation.quizes.all %}
                                         <tr>
                                             <td>{{ quiz.evaluator }}</td>
-                                            <td>{{ quiz.quiz_type }}</td>
+                                            <td><a href="{% url 'Quiz Result' evaluation.id %}">{{ quiz.quiz_type }}</a></td>
                                             {% if quiz.getState == 'Pendiente' %}
                                                 <td><span class="badge badge-danger">{{ quiz.getState }}</span></td>
                                             {% else %}

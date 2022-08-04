@@ -26,13 +26,13 @@ def quiz(request, quiz_id):
         quiz_id = request.POST.get(keys.pop(0))
         quizScore = 0
         while len(keys):
-            answerValue = int(request.POST.get(keys.pop(0))) * 12.5 / 3.0
+            answerValue = int(request.POST.get(keys.pop(0)))
             quizScore += answerValue
             answer = Answer(id=request.POST.get(keys.pop(0)), value=answerValue)
             answer.save(update_fields=["value"])
         quiz = Quiz.objects.get(id=quiz_id)
         quiz.quiz_state = 2
-        quiz.score = quizScore
+        quiz.score = quizScore * 50 / 12.0
         quiz.save(update_fields=["quiz_state", "score"])
         pendingQuiz = False
         quizes = quiz.evaluation.quizes.all()
@@ -71,8 +71,9 @@ def quizCreator(request):
     else:
         return render(request, 'evaluations/quizCreator.html', {'form': form})
 
-# def evaluationResult(request, evaluation_id):
-#     evaluation = get_object_or_404(Evaluation, id=evaluation_id)
+def quizResult(request, quiz_id):
+    quiz = get_object_or_404(Quiz, id=quiz_id)
+    answer = Answer.objects.filter(quiz=quiz)
     # matrix = []
     # categories = QuestionType.objects.all()
     # totals = evaluation.getCategoryScore
@@ -81,4 +82,4 @@ def quizCreator(request):
     #         categoryScore = quiz.getCategoryScore
     #         matrix.append([category.name, quiz.quiz_type.name, quiz.quiz_type.getWeight.filter(question_type=category).first().weight * 100 ,categoryScore[category.name], round(categoryScore[category.name]*20, 2)])
     #     matrix.append([category.name, "Total", "", totals[category.name], round(totals[category.name] * 20, 2)])
-    # return render(request, 'evaluations/evaluationresult.html', {'evaluation': evaluation})
+    return render(request, 'evaluations/quizresult.html', {'quiz': quiz, 'answer': answer})

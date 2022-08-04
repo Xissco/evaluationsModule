@@ -1,0 +1,76 @@
+{% extends 'core/base.html' %}
+
+{% block title %} Result {% endblock %}
+
+{% block header %} {{ quiz.evaluation.evaluation_process }} {% endblock %}
+
+{% load utils %}
+
+{% block content %}
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <table class="table table-bordered">
+            <tbody>
+            <tr>
+                <th class="table-secondary">Nombre del Evaluado/a</th>
+                <td>{{ quiz.evaluation.evaluated }}</td>
+                <th class="table-secondary">Cargo con el que se evalua</th>
+                <td>{{ quiz.evaluation.evaluated.job }}</td>
+            </tr>
+            <tr>
+                <th class="table-secondary">Cedula</th>
+                <td>{{ quiz.evaluation.evaluated.employee_id }}</td>
+                <th class="table-secondary">Fecha de Ingreso</th>
+                <td>{{ quiz.evaluation.evaluated.hire_date }}</td>
+            </tr>
+            <tr>
+                <th class="table-secondary">Jefe Inmediato</th>
+                <td>{{ quiz.evaluator }}</td>
+                <th class="table-secondary">Unidad/Area</th>
+                <td>{{ quiz.evaluation.evaluated.departament }}</td>
+            </tr>
+            </tbody>
+        </table>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                        {% for category in quiz.evaluation.evaluation_process.question_category.all %}
+                            <table class="table table-bordered ">
+                            <tbody>
+                            <tr class="table-secondary">
+                                <td colspan="2"><strong>{{ category }}</strong></td>
+                            </tr>
+                            {% for section in category.section.all %}
+                                <tr class="table-secondary">
+                                    <td colspan="2">{{ section }}</td>
+                                </tr>
+                                {% for question in section.question.all %}
+                                    <tr>
+                                        <td>{{ question }}</td>
+                                        <td>{{ answer | getAnswerValue:question }}</td>
+                                    </tr>
+                                {% endfor %}
+                            {% endfor %}
+                            <tr>
+                                <td><strong>Total</strong></td>
+                                <td>{{ quiz | getCategoryTotal:category }}</td>
+                            </tr>
+                            </tbody>
+                            </table>
+                        {% endfor %}
+                <table class="table table-bordered ">
+                    <tr>
+                        <td>Total de la Evaluacion</td>
+                        <td>{{ quiz.score }}</td>
+                    </tr>
+                </table>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

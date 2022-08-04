@@ -24,7 +24,7 @@ class QuestionCategory(BaseModel):
 
 class QuestionSection(BaseModel):
     name = models.CharField(max_length=100, verbose_name='Seccion')
-    question_category = models.ForeignKey(QuestionCategory, verbose_name='', on_delete=models.CASCADE)
+    question_category = models.ForeignKey(QuestionCategory, verbose_name='', on_delete=models.CASCADE, related_name='section')
 
     class Meta:
         verbose_name = "Seccion de Pregunta"
@@ -105,5 +105,5 @@ class Quiz(BaseModel):
 
 class Answer(BaseModel):
     quiz = models.ForeignKey(Quiz, verbose_name="Encuesta", on_delete=models.CASCADE, related_name="answer")
-    question = models.ForeignKey(Question, verbose_name="Pregunta", on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, verbose_name="Pregunta", on_delete=models.CASCADE, related_name="answer")
     value = models.DecimalField(max_digits=4, decimal_places=2, default=0, verbose_name='Valor', null=True, blank=True)
