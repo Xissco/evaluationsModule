@@ -14,6 +14,11 @@ def getAnswerValue(answer, question):
     return answerContent
 
 @register.filter()
+def getAnswerId(answer, question):
+    answer = answer.get(question=question)
+    return answer.id
+
+@register.filter()
 def getCategoryTotal(quiz, category):
     TWOPLACES = decimal.Decimal(10) ** -2
     evaluation_process = quiz.evaluation.evaluation_process

@@ -30,14 +30,16 @@ def quiz(request, quiz_id):
         return redirect('/error')
     if request.method == 'POST':
         keys = [key for key, value in request.POST.items() if 'csrf' not in key]
-        quiz_id = request.POST.get(keys.pop(0))
+        print(keys)
+        quizid = request.POST.get(keys.pop(0))
         quizScore = 0
         while len(keys):
             answerValue = int(request.POST.get(keys.pop(0)))
             quizScore += answerValue
             answer = Answer(id=request.POST.get(keys.pop(0)), value=answerValue)
             answer.save(update_fields=["value"])
-        quiz = Quiz.objects.get(id=quiz_id)
+            print(answer)
+        quiz = Quiz.objects.get(id=quizid)
         quiz.quiz_state = 2
         quiz.score = quizScore * 50 / 12.0
         quiz.save(update_fields=["quiz_state", "score"])
@@ -56,7 +58,8 @@ def quiz(request, quiz_id):
             quiz.evaluation.save(update_fields=["score"])
         return redirect('/evaluations/quizselector')
     else:
-        return render(request, 'evaluations/quiz.html', {'quiz': quiz})
+        answer = Answer.objects.filter(quiz=quiz)
+        return render(request, 'evaluations/quiz.html', {'quiz': quiz, 'answer': answer})
 
 
 def quizCreator(request):
