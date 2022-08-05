@@ -6,6 +6,7 @@ from hr.models import Employee
 
 # Create your views here.
 def quizSelector(request):
+    if not request.user.is_authenticated: return redirect('/')
     evaluator = Employee.objects.get(user=request.user)
     quizes = Quiz.objects.filter(evaluator=evaluator)
     pendings = len(Quiz.objects.filter(evaluator=evaluator).filter(quiz_state=1))
@@ -14,6 +15,8 @@ def quizSelector(request):
 
 
 def quizState(request):
+    if not request.user.is_authenticated: return redirect('/')
+    if not request.user.is_staff: return redirect('/')
     evaluations = Evaluation.objects.all()
     pendings = len(Quiz.objects.all().filter(quiz_state=1))
     context = {'evaluations': evaluations, 'pendings': pendings}
@@ -21,6 +24,10 @@ def quizState(request):
 
 
 def quiz(request, quiz_id):
+    if not request.user.is_authenticated: return redirect('/')
+    quiz = Quiz.objects.get(id=quiz_id)
+    if quiz.quiz_state == '2' or quiz.evaluator.user != request.user:
+        return redirect('/error')
     if request.method == 'POST':
         keys = [key for key, value in request.POST.items() if 'csrf' not in key]
         quiz_id = request.POST.get(keys.pop(0))
@@ -49,11 +56,12 @@ def quiz(request, quiz_id):
             quiz.evaluation.save(update_fields=["score"])
         return redirect('/evaluations/quizselector')
     else:
-        quizes = get_object_or_404(Quiz, id=quiz_id)
-        return render(request, 'evaluations/quiz.html', {'quiz': quizes})
+        return render(request, 'evaluations/quiz.html', {'quiz': quiz})
 
 
 def quizCreator(request):
+    if not request.user.is_authenticated: return redirect('/')
+    if not request.user.is_staff: return redirect('/')
     form = quizForm(request.POST or None)
     if form.is_valid():
         employee = form.cleaned_data.get("employee")
@@ -72,6 +80,8 @@ def quizCreator(request):
         return render(request, 'evaluations/quizCreator.html', {'form': form})
 
 def quizResult(request, quiz_id):
+    if not request.user.is_authenticated: return redirect('/')
+    if not request.user.is_staff: return redirect('/')
     quiz = get_object_or_404(Quiz, id=quiz_id)
     answer = Answer.objects.filter(quiz=quiz)
     return render(request, 'evaluations/quizresult.html', {'quiz': quiz, 'answer': answer})

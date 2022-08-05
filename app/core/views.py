@@ -17,10 +17,14 @@ def loginView(request):
         return redirect('evaluations/quizstate') if user.is_staff else redirect('evaluations/quizselector')
     if request.user.is_authenticated:
         return redirect('evaluations/quizstate') if request.user.is_staff else redirect('evaluations/quizselector')
-    context = {'form': form,}
+    context = {'form': form, }
     return render(request, 'core/login.html', context)
 
 
 def logoutView(request):
     logout(request)
     return redirect('/')
+
+
+def errorView(request):
+    return render(request, 'core/error.html')
