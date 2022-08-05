@@ -30,7 +30,6 @@ def quiz(request, quiz_id):
         return redirect('/error')
     if request.method == 'POST':
         keys = [key for key, value in request.POST.items() if 'csrf' not in key]
-        print(keys)
         quizid = request.POST.get(keys.pop(0))
         quizScore = 0
         while len(keys):
@@ -38,7 +37,6 @@ def quiz(request, quiz_id):
             quizScore += answerValue
             answer = Answer(id=request.POST.get(keys.pop(0)), value=answerValue)
             answer.save(update_fields=["value"])
-            print(answer)
         quiz = Quiz.objects.get(id=quizid)
         quiz.quiz_state = 2
         quiz.score = quizScore * 50 / 12.0
