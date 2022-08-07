@@ -25,7 +25,7 @@ class AnswerSet(BaseModel):
 class Answer(BaseModel):
     content = models.TextField(verbose_name="Enunciado")
     value = models.DecimalField(max_digits=5, decimal_places=2, default=0, verbose_name='Valor', null=True, blank=True)
-    answer_set = models.ForeignKey(AnswerSet, verbose_name='Set de Respuesta', on_delete=models.CASCADE)
+    answer_set = models.ForeignKey(AnswerSet, verbose_name='Set de Respuesta', on_delete=models.CASCADE, related_name='answer')
 
     class Meta:
         verbose_name = "Respuesta"
@@ -108,6 +108,7 @@ class EvaluationProcess(BaseModel):
 class Evaluation(BaseModel):
     evaluation_process = models.ForeignKey(EvaluationProcess, verbose_name="Proceso de Evaluacion", on_delete=models.CASCADE)
     evaluated = models.ForeignKey(Employee, verbose_name="Evaluado", on_delete=models.CASCADE)
+    score = models.DecimalField(max_digits=4, decimal_places=2, default=0, verbose_name='Total')
 
     class Meta:
         verbose_name = "Evaluación"

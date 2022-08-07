@@ -35,8 +35,7 @@
                                             <td>{{ quiz.evaluation.evaluated.departament }}</td>
                                             <td>{{ quiz.quiz_type }}</td>
                                             {% if quiz.getState == 'Pendiente' %}
-{#                                                <td><a href="{% url 'Quiz' quiz.id %}" >{{ quiz.getState }} </a></td>#}
-                                                <td><a href="/" >{{ quiz.getState }} </a></td>
+                                                <td><a href="{% url 'Quiz' quiz.id %}" >{{ quiz.getState }} </a></td>
                                             {% else %}
                                                 <td>{{ quiz.getState }}</td>
                                             {% endif %}

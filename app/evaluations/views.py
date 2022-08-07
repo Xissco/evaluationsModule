@@ -7,7 +7,8 @@ from formtools.wizard.views import SessionWizardView
 # from .forms import quizForm
 from hr.models import Employee
 from evaluations.forms import quizCreatorView1, quizCreatorView2
-from evaluations.models import Evaluation, EvaluationProcess, Quiz, QuizType, QuestionAnswer
+from evaluations.models import Evaluation, EvaluationProcess, Quiz, QuizType, QuestionAnswer, Answer
+from decimal import Decimal
 
 FORMS = [("evaluation", quizCreatorView1),
          ("quiz", quizCreatorView2)]
@@ -81,63 +82,44 @@ def quizSelector(request):
 #     return render(request, 'evaluations/quizState.html', context)
 #
 #
-# def quiz(request, quiz_id):
-#     if not request.user.is_authenticated: return redirect('/')
-#     quiz = Quiz.objects.get(id=quiz_id)
-#     if quiz.quiz_state == '2' or quiz.evaluator.user != request.user:
-#         return redirect('/error')
-#     if request.method == 'POST':
-#         keys = [key for key, value in request.POST.items() if 'csrf' not in key]
-#         quizid = request.POST.get(keys.pop(0))
-#         quizScore = 0
-#         while len(keys):
-#             answerValue = int(request.POST.get(keys.pop(0)))
-#             quizScore += answerValue
-#             answer = Answer(id=request.POST.get(keys.pop(0)), value=answerValue)
-#             answer.save(update_fields=["value"])
-#         quiz = Quiz.objects.get(id=quizid)
-#         quiz.quiz_state = 2
-#         quiz.score = quizScore * 50 / 12.0
-#         quiz.save(update_fields=["quiz_state", "score"])
-#         pendingQuiz = False
-#         quizes = quiz.evaluation.quizes.all()
-#         for quiz in quizes:
-#             if quiz.getState == 'Pendiente':
-#                 pendingQuiz = True
-#                 break
-#         totalScore = 0
-#         if not pendingQuiz:
-#             for quiz in quizes:
-#                 totalScore += quiz.score
-#             totalScore = totalScore/len(quizes)
-#             quiz.evaluation.score = totalScore
-#             quiz.evaluation.save(update_fields=["score"])
-#         return redirect('/evaluations/quizselector')
-#     else:
-#         answer = Answer.objects.filter(quiz=quiz)
-#         return render(request, 'evaluations/quiz.html', {'quiz': quiz, 'answer': answer})
-#
-#
-# def quizCreator(request):
-#     if not request.user.is_authenticated: return redirect('/')
-#     if not request.user.is_staff: return redirect('/')
-#     form = quizForm(request.POST or None)
-#     if form.is_valid():
-#         employee = form.cleaned_data.get("employee")
-#         evaluator = form.cleaned_data.get("evaluator")
-#         quiz_type = form.cleaned_data.get("quiz_type")
-#         evaluation_process = form.cleaned_data.get("evaluation_process")
-#         evaluation, created = Evaluation.objects.get_or_create(evaluated=employee, evaluation_process=evaluation_process)
-#         quiz = Quiz(quiz_type=quiz_type, evaluation=evaluation, evaluator=evaluator, quiz_state=1)
-#         quiz.save()
-#         for section in form.cleaned_data.get("question_section"):
-#             for question in section.question.all():
-#                 answer = Answer(quiz=quiz, question=question)
-#                 answer.save()
-#         return redirect('/evaluations/quizstate')
-#     else:
-#         return render(request, 'evaluations/quizCreator.html', {'form': form})
-#
+def quiz(request, quiz_id):
+    if not request.user.is_authenticated: return redirect('/')
+    quiz = Quiz.objects.get(id=quiz_id)
+    if quiz.quiz_state == '2' or quiz.evaluator.user != request.user:
+        return redirect('/error')
+    if request.method == 'POST':
+        keys = [key for key, value in request.POST.items() if 'csrf' not in key]
+        quizid = request.POST.get(keys.pop(0))
+        quizScore = 0
+        while len(keys):
+            answerId = request.POST.get(keys.pop(0))
+            answer = Answer.objects.get(id=answerId)
+            quizScore += answer.value
+            question_answer = QuestionAnswer(id=request.POST.get(keys.pop(0)), answer=answer)
+            question_answer.save(update_fields=["answer"])
+        quiz = Quiz.objects.get(id=quizid)
+        quiz.quiz_state = 2
+        quiz.score = quizScore * Decimal(50 / 12.0)
+        quiz.save(update_fields=["quiz_state", "score"])
+        pendingQuiz = False
+        quizes = quiz.evaluation.quizes.all()
+        for quiz in quizes:
+            if quiz.getState == 'Pendiente':
+                pendingQuiz = True
+                break
+        totalScore = 0
+        if not pendingQuiz:
+            for quiz in quizes:
+                totalScore += quiz.score * quiz.weight
+            quiz.evaluation.score = totalScore
+            quiz.evaluation.save(update_fields=["score"])
+        return redirect('/evaluations/quizselector')
+    else:
+        question_answer = QuestionAnswer.objects.filter(quiz=quiz)
+        print(question_answer)
+        return render(request, 'evaluations/quiz.html', {'quiz': quiz, 'question_answer': question_answer})
+
+
 # def quizResult(request, quiz_id):
 #     if not request.user.is_authenticated: return redirect('/')
 #     if not request.user.is_staff: return redirect('/')

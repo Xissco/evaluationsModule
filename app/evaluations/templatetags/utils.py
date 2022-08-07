@@ -24,9 +24,9 @@ def getFieldId(fields, field):
 
 
 @register.filter()
-def getAnswerId(answer, question):
-    answer = answer.get(question=question)
-    return answer.id
+def getQuestionAnswerId(question_answer, question):
+    question_answer_id = question_answer.get(question=question)
+    return question_answer_id.id
 
 @register.filter()
 def getCategoryTotal(quiz, category):
