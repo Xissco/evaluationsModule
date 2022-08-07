@@ -73,15 +73,15 @@ def quizSelector(request):
     return render(request, 'evaluations/quizSelector.html', context)
 
 
-# def quizState(request):
-#     if not request.user.is_authenticated: return redirect('/')
-#     if not request.user.is_staff: return redirect('/')
-#     evaluations = Evaluation.objects.all()
-#     pendings = len(Quiz.objects.all().filter(quiz_state=1))
-#     context = {'evaluations': evaluations, 'pendings': pendings}
-#     return render(request, 'evaluations/quizState.html', context)
-#
-#
+def quizState(request):
+    if not request.user.is_authenticated: return redirect('/')
+    if not request.user.is_staff: return redirect('/')
+    evaluations = Evaluation.objects.all()
+    pendings = len(Quiz.objects.all().filter(quiz_state=1))
+    context = {'evaluations': evaluations, 'pendings': pendings}
+    return render(request, 'evaluations/quizState.html', context)
+
+
 def quiz(request, quiz_id):
     if not request.user.is_authenticated: return redirect('/')
     quiz = Quiz.objects.get(id=quiz_id)
