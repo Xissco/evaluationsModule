@@ -10,7 +10,7 @@ from evaluations.forms import quizCreatorView1, quizCreatorView2
 from evaluations.models import Evaluation, EvaluationProcess, Quiz, QuizType, QuestionAnswer
 
 FORMS = [("evaluation", quizCreatorView1),
-         ("quiz", modelformset_factory(Quiz, form=quizCreatorView2))]
+         ("quiz", quizCreatorView2)]
 
 TEMPLATES = {"evaluation": "evaluations/evaluationWizard.html",
              "quiz": "evaluations/quizWizard.html"}
@@ -20,14 +20,15 @@ class ApplicationWizardView(SessionWizardView):
     def get_template_names(self):
         return [TEMPLATES[self.steps.current]]
 
-    def get_form_initial(self, step):
+    def get_form(self, step=None, data=None, files=None):
         if step == 'quiz':
             form_class = self.form_list[step]
             evaluation_data = self.storage.get_step_data('evaluation')
             evaluation_process = EvaluationProcess.objects.get(id=int(evaluation_data['evaluation-evaluation_process']))
             quiz_type_len = len(evaluation_process.quiz_type.all())
-            form_class.extra = quiz_type_len
-        return self.initial_dict.get(step, {})
+            form = formset_factory(quizCreatorView2, extra=quiz_type_len)
+            self.form_list[step] = form
+        return super().get_form(step, data, files)
 
     def get_context_data(self, form, **kwargs):
         context = super().get_context_data(form=form, **kwargs)

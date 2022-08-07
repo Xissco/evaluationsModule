@@ -10,8 +10,7 @@
 
     {% for f in form %}
         {{ quiz_types | getField:forloop.counter }}
-        <input type="hidden" name="quiz-{{ forloop.counter|add:"-1" }}-category" value={{ quiz_types | getFieldId:forloop.counter }} id="id_quiz-{{ forloop.counter }}-category">
+        <input type="hidden" name="quiz-{{ forloop.counter|add:"-1" }}-category" value={{ quiz_types | getFieldId:forloop.counter }} id="id_quiz-{{ forloop.counter|add:"-1" }}-category">
         {{ f.evaluator }}
     {% endfor %}
-{#    {{ form }}#}
 {% endblock %}
