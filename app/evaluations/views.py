@@ -1,11 +1,11 @@
 from django.contrib.auth.models import User
-from django.forms import formset_factory, modelformset_factory
+from django.forms import formset_factory
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from formtools.wizard.views import SessionWizardView
 # from .models import Evaluation, Quiz, Answer
 # from .forms import quizForm
-# from hr.models import Employee
+from hr.models import Employee
 from evaluations.forms import quizCreatorView1, quizCreatorView2
 from evaluations.models import Evaluation, EvaluationProcess, Quiz, QuizType, QuestionAnswer
 
@@ -61,16 +61,17 @@ class ApplicationWizardView(SessionWizardView):
 
 def successful(request):
     return render(request, 'evaluations/successfull.html')
+
 # Create your views here.
-# def quizSelector(request):
-#     if not request.user.is_authenticated: return redirect('/')
-#     evaluator = Employee.objects.get(user=request.user)
-#     quizes = Quiz.objects.filter(evaluator=evaluator)
-#     pendings = len(Quiz.objects.filter(evaluator=evaluator).filter(quiz_state=1))
-#     context = {'quizes': quizes, 'pendings': pendings}
-#     return render(request, 'evaluations/quizSelector.html', context)
-#
-#
+def quizSelector(request):
+    if not request.user.is_authenticated: return redirect('/')
+    evaluator = Employee.objects.get(user=request.user)
+    quizes = Quiz.objects.filter(evaluator=evaluator)
+    pendings = len(Quiz.objects.filter(evaluator=evaluator).filter(quiz_state=1))
+    context = {'quizes': quizes, 'pendings': pendings}
+    return render(request, 'evaluations/quizSelector.html', context)
+
+
 # def quizState(request):
 #     if not request.user.is_authenticated: return redirect('/')
 #     if not request.user.is_staff: return redirect('/')
