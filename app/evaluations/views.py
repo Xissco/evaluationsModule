@@ -1,9 +1,65 @@
 from django.contrib.auth.models import User
+from django.forms import formset_factory, modelformset_factory
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Evaluation, Quiz, Answer
-from .forms import quizForm
-from hr.models import Employee
+from formtools.wizard.views import SessionWizardView
+# from .models import Evaluation, Quiz, Answer
+# from .forms import quizForm
+# from hr.models import Employee
+from evaluations.forms import quizCreatorView1, quizCreatorView2
+from evaluations.models import Evaluation, EvaluationProcess, Quiz, QuizType, QuestionAnswer
 
+FORMS = [("evaluation", quizCreatorView1),
+         ("quiz", modelformset_factory(Quiz, form=quizCreatorView2))]
+
+TEMPLATES = {"evaluation": "evaluations/evaluationWizard.html",
+             "quiz": "evaluations/quizWizard.html"}
+
+
+class ApplicationWizardView(SessionWizardView):
+    def get_template_names(self):
+        return [TEMPLATES[self.steps.current]]
+
+    def get_form_initial(self, step):
+        if step == 'quiz':
+            form_class = self.form_list[step]
+            evaluation_data = self.storage.get_step_data('evaluation')
+            evaluation_process = EvaluationProcess.objects.get(id=int(evaluation_data['evaluation-evaluation_process']))
+            quiz_type_len = len(evaluation_process.quiz_type.all())
+            form_class.extra = quiz_type_len
+        return self.initial_dict.get(step, {})
+
+    def get_context_data(self, form, **kwargs):
+        context = super().get_context_data(form=form, **kwargs)
+        if self.steps.current == 'quiz':
+            evaluation_data = self.storage.get_step_data('evaluation')
+            evaluation_process = EvaluationProcess.objects.get(id=int(evaluation_data['evaluation-evaluation_process']))
+            quiz_type = evaluation_process.quiz_type.all()
+            context.update({'quiz_types': quiz_type})
+        return context
+
+    def done(self, form_list, **kwargs):
+        form_data = [form.cleaned_data for form in form_list]
+        evaluation_process = form_data.pop(0)
+        print(evaluation_process)
+        print(form_data)
+        evaluation = Evaluation(evaluation_process=evaluation_process['evaluation_process'],
+                                evaluated=evaluation_process['evaluated'])
+        evaluation.save()
+        for evaluator in form_data.pop(0):
+            quiz_type = QuizType.objects.get(id=evaluator['category'])
+            quiz = Quiz(evaluator=evaluator['evaluator'], quiz_state='1', quiz_type=quiz_type, evaluation=evaluation)
+            quiz.save()
+            for category in quiz_type.question_category.all():
+                for section in category.question_section.all():
+                    for question in section.question.all():
+                        question_answer = QuestionAnswer(quiz=quiz, question=question)
+                        question_answer.save()
+        return HttpResponseRedirect('/evaluations/successfull')
+
+
+def successful(request):
+    return render(request, 'evaluations/successfull.html')
 # Create your views here.
 # def quizSelector(request):
 #     if not request.user.is_authenticated: return redirect('/')

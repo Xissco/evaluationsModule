@@ -14,6 +14,16 @@ def getAnswerValue(answer, question):
     return answerContent
 
 @register.filter()
+def getField(fields, field):
+    return fields[field-1]
+
+
+@register.filter()
+def getFieldId(fields, field):
+    return fields[field-1].id
+
+
+@register.filter()
 def getAnswerId(answer, question):
     answer = answer.get(question=question)
     return answer.id

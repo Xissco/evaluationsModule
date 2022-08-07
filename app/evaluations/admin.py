@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import EvaluationProcess, QuizType, QuestionCategory, QuestionSection, Question, AnswerSet, Answer
+from .models import EvaluationProcess, QuizType, QuestionCategory, QuestionSection, Question, AnswerSet, Answer, \
+    Evaluation, Quiz
 
 
 # Register your models here.
@@ -22,4 +23,6 @@ admin.site.register(QuestionSection, BaseAdmin)
 admin.site.register(Question, BaseAdmin)
 admin.site.register(AnswerSet, BaseAdmin)
 admin.site.register(Answer, BaseAdmin)
+admin.site.register(Evaluation, BaseAdmin)
+admin.site.register(Quiz, BaseAdmin)
 
