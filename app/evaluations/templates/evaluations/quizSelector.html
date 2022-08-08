@@ -30,6 +30,7 @@
                                 </thead>
                                 <tbody>
                                     {% for quiz in quizes %}
+                                        <tr>
                                             <td>{{ quiz.evaluation.evaluated }}</td>
                                             <td>{{ quiz.evaluation.evaluated.departament }}</td>
                                             <td>{{ quiz.quiz_type }}</td>
@@ -39,7 +40,6 @@
                                                 <td>{{ quiz.getState }}</td>
                                             {% endif %}
                                         </tr>
-
                                     {% endfor %}
                                 </tbody>
                                 <tfoot>

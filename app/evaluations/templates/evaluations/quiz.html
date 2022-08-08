@@ -46,11 +46,11 @@
                 <div class="card-body">
                     {% csrf_token %}
                     <input type="hidden" name="quiz_id" value="{{ quiz.id }}" />
-                    {% for category in quiz.evaluation.evaluation_process.question_category.all %}
+                    {% for category in quiz.quiz_type.question_category.all %}
                         <div class="form-group">
                             <h4>{{ category }}</h4>
                         </div>
-                        {% for section in category.section.all %}
+                        {% for section in category.question_section.all %}
                             <div class="form-group">
                                 <strong>{{ section }}</strong>
                             </div>
@@ -58,25 +58,15 @@
                                 <div class="form-group">
                                     {{ question }}
                                     <div class="form-group">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="answer{{ question.id }}" value=3 id="choice3{{ question.id }}" required/>
-                                            <label class="form-check-label" for="choice3{{ question.id }}">Muy Desarrollado</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="answer{{ question.id }}" value=2 id="choice2{{ question.id }}"/>
-                                            <label class="form-check-label" for="choice2{{ question.id }}">Desarrollado</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="answer{{ question.id }}" value=1 id="choice1{{ question.id }}"/>
-                                            <label class="form-check-label" for="choice1{{ question.id }}">Poco Desarrollado</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="answer{{ question.id }}" value=0 id="choice0{{ question.id }}"/>
-                                            <label class="form-check-label" for="choice0{{ question.id }}">No Desarrollado</label>
-                                        </div>
+                                    {% for answer in question.answer_set.answer.all %}
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="answer{{ question.id }}" value={{ answer.id }} id="choice{{ forloop.counter }}{{ question.id }}" required/>
+                                                <label class="form-check-label" for="choice{{ forloop.counter }}{{ question.id }}">{{ answer.content }}</label>
+                                            </div>
+                                    {% endfor %}
                                     </div>
                                 </div>
-                                <input type="hidden" name="answer_id_{{ question.id }}" value="{{ answer | getAnswerId:question }}"/>
+                                <input type="hidden" name="question_answer_id_{{ question.id }}" value="{{ question_answer | getQuestionAnswerId:question }}"/>
                             {% endfor %}
                         {% endfor %}
                     {% endfor %}

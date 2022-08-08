@@ -35,7 +35,11 @@
                                     {% for quiz in evaluation.quizes.all %}
                                         <tr>
                                             <td>{{ quiz.evaluator }}</td>
-                                            <td><a href="{% url 'Quiz Result' evaluation.id %}">{{ quiz.quiz_type }}</a></td>
+                                            {% if quiz.quiz_state == '1' %}
+                                                <td>{{ quiz.quiz_type }}</td>
+                                            {% else %}
+                                                <td><a href="{% url 'Quiz Result' quiz.id %}">{{ quiz.quiz_type }}</a></td>
+                                            {% endif %}
                                             {% if quiz.getState == 'Pendiente' %}
                                                 <td><span class="badge badge-danger">{{ quiz.getState }}</span></td>
                                             {% else %}

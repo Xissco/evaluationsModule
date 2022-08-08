@@ -1,10 +1,14 @@
 from django.urls import path
-from . import views
+
+from .forms import quizCreatorView1, quizCreatorView2
+from .views import ApplicationWizardView, FORMS, successful, quizSelector, quiz, quizState, quizResult
 
 urlpatterns = [
-    path('quizselector/', views.quizSelector, name="Selector"),
-    path('quizstate/', views.quizState, name="State"),
-    path('quizcreator/', views.quizCreator, name="Creator"),
-    path('quiz/<int:quiz_id>/', views.quiz, name="Quiz"),
-    path('evaluationresult/<int:quiz_id>/', views.quizResult, name="Quiz Result"),
+    path('quizcreator/', ApplicationWizardView.as_view(FORMS)),
+    path('quizselector/', quizSelector, name="Selector"),
+    path('quizstate/', quizState, name="State"),
+    # path('quizcreator/', views.quizCreator, name="Creator"),
+    path('successfull/', successful, name="Successful"),
+    path('quiz/<int:quiz_id>/', quiz, name="Quiz"),
+    path('evaluationresult/<int:quiz_id>/', quizResult, name="Quiz Result"),
 ]
