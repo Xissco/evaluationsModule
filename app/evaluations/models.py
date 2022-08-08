@@ -13,6 +13,7 @@ class BaseModel(models.Model):
 
 class AnswerSet(BaseModel):
     name = models.CharField(max_length=100, verbose_name='Nombre')
+    max_value = models.DecimalField(max_digits=5, decimal_places=2, default=0, verbose_name='Maximo Valor de Respuesta')
 
     class Meta:
         verbose_name = "Set de Respuesta"
@@ -134,6 +135,10 @@ class Quiz(BaseModel):
 
     def __str__(self):
         return str(self.quiz_type) + " - " + str(self.evaluation.evaluated.name) + " " + str(self.evaluation.evaluated.lastname)
+
+    @property
+    def getWeight(self):
+        return self.quiz_type.weight
 
     @property
     def getMaxScore(self):

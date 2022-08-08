@@ -55,7 +55,7 @@ class Employee(BaseModel):
     hire_date = models.DateField(verbose_name='Fecha de Ingreso')
     job = models.ForeignKey(Job, verbose_name='Puesto', on_delete=models.CASCADE, null=True)
     departament = models.ForeignKey(Department, verbose_name='Departamento', on_delete=models.CASCADE, null=True)
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
         verbose_name = "empleado"
