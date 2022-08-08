@@ -120,9 +120,9 @@ def quiz(request, quiz_id):
         return render(request, 'evaluations/quiz.html', {'quiz': quiz, 'question_answer': question_answer})
 
 
-# def quizResult(request, quiz_id):
-#     if not request.user.is_authenticated: return redirect('/')
-#     if not request.user.is_staff: return redirect('/')
-#     quiz = get_object_or_404(Quiz, id=quiz_id)
-#     answer = Answer.objects.filter(quiz=quiz)
-#     return render(request, 'evaluations/quizresult.html', {'quiz': quiz, 'answer': answer})
+def quizResult(request, quiz_id):
+    if not request.user.is_authenticated: return redirect('/')
+    if not request.user.is_staff: return redirect('/')
+    quiz = get_object_or_404(Quiz, id=quiz_id)
+    question_answer = QuestionAnswer.objects.filter(quiz=quiz)
+    return render(request, 'evaluations/quizresult.html', {'quiz': quiz, 'answer': question_answer})

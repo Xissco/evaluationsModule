@@ -39,13 +39,13 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
-                        {% for category in quiz.evaluation.evaluation_process.question_category.all %}
+                        {% for category in quiz.quiz_type.question_category.all %}
                             <table class="table table-bordered ">
                             <tbody>
                             <tr class="table-secondary">
                                 <td colspan="2"><strong>{{ category }} (50%)</strong></td>
                             </tr>
-                            {% for section in category.section.all %}
+                            {% for section in category.question_section.all %}
                                 <tr class="table-secondary">
                                     {% if forloop.first %}
                                     <td>{{ section }}</td>

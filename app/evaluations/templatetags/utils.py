@@ -8,10 +8,8 @@ register = template.Library()
 
 @register.filter()
 def getAnswerValue(answer, question):
-    answerDict = {3:'Muy Desarrollado', 2:'Desarrollado', 1:'Poco Desarrollado', 0:'No Desarrollado'}
     answer = answer.get(question=question)
-    answerContent = answerDict[answer.value]
-    return answerContent
+    return answer.answer.content
 
 @register.filter()
 def getField(fields, field):
@@ -31,10 +29,9 @@ def getQuestionAnswerId(question_answer, question):
 @register.filter()
 def getCategoryTotal(quiz, category):
     TWOPLACES = decimal.Decimal(10) ** -2
-    evaluation_process = quiz.evaluation.evaluation_process
     categoryScore = 0
-    for section in evaluation_process.question_section.filter(question_category=category):
+    for section in category.question_section.all():
         for question in section.question.all():
-            answer = Answer.objects.get(quiz=quiz, question=question)
-            categoryScore += answer.value
+            for question_answer in question.answer.filter(quiz=quiz):
+                categoryScore += question_answer.answer.value
     return (categoryScore * decimal.Decimal(25 / 6.0)).quantize(TWOPLACES)
