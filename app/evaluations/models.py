@@ -79,13 +79,13 @@ class QuestionCategory(BaseModel):
 
 
 class QuizType(BaseModel):
-    name = models.CharField(max_length=100, verbose_name="Tipo de Evaluacion")
+    name = models.CharField(max_length=100, verbose_name="Tipo de Encuesta")
     weight = models.DecimalField(max_digits=50, decimal_places=2)
-    question_category = models.ManyToManyField(QuestionCategory, verbose_name="Ctegorias de Preguntas")
+    question_category = models.ManyToManyField(QuestionCategory, verbose_name="Categorias de Preguntas")
 
     class Meta:
-        verbose_name = "Tipo de Evaluacion"
-        verbose_name_plural = "Tipos de Evaluacion"
+        verbose_name = "Tipo de Encuesta"
+        verbose_name_plural = "Tipos de Encuesta"
         ordering = ["created"]
 
     def __str__(self):
@@ -95,6 +95,7 @@ class QuizType(BaseModel):
 class EvaluationProcess(BaseModel):
     name = models.CharField(max_length=100, verbose_name='Proceso')
     quiz_type = models.ManyToManyField(QuizType, verbose_name='Tipos de Evaluacion')
+    max_score = models.DecimalField(max_digits=4, decimal_places=2, default=0, verbose_name='Nota Maxima')
 
     class Meta:
         verbose_name = "Proceso de Evaluación"
@@ -116,7 +117,7 @@ class Evaluation(BaseModel):
         ordering = ["created"]
 
     def __str__(self):
-        return "Evaluacion " + str(self.evaluated.name)
+        return str(self.evaluation_process) + " - " + str(self.evaluated.name) + " " + str(self.evaluated.lastname)
 
 
 class Quiz(BaseModel):
@@ -130,6 +131,13 @@ class Quiz(BaseModel):
         verbose_name = "Encuesta"
         verbose_name_plural = "Encuestas"
         ordering = ["created"]
+
+    def __str__(self):
+        return str(self.quiz_type) + " - " + str(self.evaluation.evaluated.name) + " " + str(self.evaluation.evaluated.lastname)
+
+    @property
+    def getMaxScore(self):
+        return self.evaluation.evaluation_process.max_score * self.quiz_type.weight
 
     @property
     def getState(self):
