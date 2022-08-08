@@ -49,7 +49,9 @@ class ApplicationWizardView(SessionWizardView):
                                 evaluated=evaluation_process['evaluated'])
         evaluation.save()
         for evaluator in form_data.pop(0):
-            quiz_type = QuizType.objects.get(id=evaluator['category'])
+            if not evaluator: break
+            category_id = evaluator['category']
+            quiz_type = QuizType.objects.get(id=category_id)
             quiz = Quiz(evaluator=evaluator['evaluator'], quiz_state='1', quiz_type=quiz_type, evaluation=evaluation)
             quiz.save()
             for category in quiz_type.question_category.all():
@@ -91,15 +93,18 @@ def quiz(request, quiz_id):
         keys = [key for key, value in request.POST.items() if 'csrf' not in key]
         quizid = request.POST.get(keys.pop(0))
         quizScore = 0
+        maxQuizScore = 0
         while len(keys):
             answerId = request.POST.get(keys.pop(0))
             answer = Answer.objects.get(id=answerId)
-            quizScore += answer.value
             question_answer = QuestionAnswer(id=request.POST.get(keys.pop(0)), answer=answer)
             question_answer.save(update_fields=["answer"])
+            question_answer = QuestionAnswer.objects.get(id=question_answer.id)
+            quizScore += answer.value * question_answer.question.value
+            maxQuizScore += question_answer.question.answer_set.max_value
         quiz = Quiz.objects.get(id=quizid)
         quiz.quiz_state = 2
-        quiz.score = quizScore * Decimal(50 / 12.0)
+        quiz.score = quizScore * quiz.getMaxScore / maxQuizScore
         quiz.save(update_fields=["quiz_state", "score"])
         pendingQuiz = False
         quizes = quiz.evaluation.quizes.all()
@@ -110,7 +115,7 @@ def quiz(request, quiz_id):
         totalScore = 0
         if not pendingQuiz:
             for quiz in quizes:
-                totalScore += quiz.score * quiz.weight
+                totalScore += quiz.score
             quiz.evaluation.score = totalScore
             quiz.evaluation.save(update_fields=["score"])
         return redirect('/evaluations/quizselector')

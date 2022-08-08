@@ -43,7 +43,7 @@
                             <table class="table table-bordered ">
                             <tbody>
                             <tr class="table-secondary">
-                                <td colspan="2"><strong>{{ category }} (50%)</strong></td>
+                                <td colspan="2"><strong>{{ category }} ({% widthratio category.value 1 100 %}%)</strong></td>
                             </tr>
                             {% for section in category.question_section.all %}
                                 <tr class="table-secondary">
