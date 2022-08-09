@@ -120,7 +120,6 @@ class Evaluation(BaseModel):
     def __str__(self):
         return str(self.evaluation_process) + " - " + str(self.evaluated.name) + " " + str(self.evaluated.lastname)
 
-
 class Quiz(BaseModel):
     evaluator = models.ForeignKey(Employee, verbose_name='Evaluador', on_delete=models.CASCADE)
     quiz_state = models.CharField(max_length=100, choices=(('1', 'Pendiente'), ('2', 'Realizado')), default='1')
@@ -141,8 +140,16 @@ class Quiz(BaseModel):
         return self.quiz_type.weight
 
     @property
-    def getMaxScore(self):
+    def getQuizMaxScore(self):
         return self.evaluation.evaluation_process.max_score * self.quiz_type.weight
+
+    @property
+    def getCategoryMaxScore(self):
+        return self.getQuizMaxScore * self.quiz_type.question_category.value
+
+    @property
+    def getSectionMaxScore(self):
+        return self.getCategoryMaxScore * self.quiz_type.question_category.question_section.value
 
     @property
     def getState(self):

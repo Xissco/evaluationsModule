@@ -116,24 +116,30 @@ def quiz(request, quiz_id):
             question_answer = QuestionAnswer(id=request.POST.get(keys.pop(0)), answer=answer)
             question_answer.save(update_fields=["answer"])
         total_quiz_score = 0
+        max_quiz_score = 0
         for category in quiz.quiz_type.question_category.all():
             total_category_score = 0
+            max_category_score = 0
             for section in category.question_section.all():
                 total_section_score = 0
+                max_section_score = 0
                 for question in section.question.all():
                     question_answer = QuestionAnswer.objects.get(quiz=quiz, question=question)
                     total_section_score += question_answer.answer.value * question.value
+                    max_section_score += question.answer_set.max_value
                 section_score = SectionScore.objects.get(quiz=quiz, question_section=section)
-                section_score.value = total_section_score
+                section_score.value = total_section_score * quiz.getSectionMaxScore / max_section_score
                 section_score.save(update_fields=["value"])
                 total_category_score += total_section_score * section.value
+                max_category_score += max_section_score
             category_score = CategoryScore.objects.get(quiz=quiz, question_category=category)
-            category_score.value = total_category_score
+            category_score.value = total_category_score * quiz.getCategoryMaxScore / max_category_score
             category_score.save(update_fields=["value"])
             total_quiz_score += total_category_score * category.value
+            max_quiz_score += max_category_score
         quiz = Quiz.objects.get(id=quizid)
         quiz.quiz_state = 2
-        quiz.score = total_quiz_score
+        quiz.score = total_quiz_score * quiz.getQuizMaxScore / max_quiz_score
         quiz.save(update_fields=["quiz_state", "score"])
         pendingQuiz = False
         quizes = quiz.evaluation.quizes.all()
