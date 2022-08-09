@@ -26,7 +26,7 @@
                         {% if request.user.is_staff and  "/evaluations/quizstate/" in request.path %}
                             <li class="breadcrumb-item"><a href="{% url 'EvaluationChart' evaluation_process.id %}">Reporte</a></li>
                             <li class="breadcrumb-item"><a href="/evaluations/quizcreator">Crear Encuesta</a></li>
-                        {% elif request.user.is_staff and request.path == "/evaluations/quizcreator/" or "evaluationresult" in request.path%}
+                        {% elif request.user.is_staff and request.path == "evaluationresult" in request.path%}
                             <li class="breadcrumb-item"><a href="{% url 'State' quiz.evaluation.evaluation_process.id %}">Estado de Encuesta</a></li>
                         {% endif %}
                         <li class="breadcrumb-item"><a href="/logout">Cerrar Sesión</a></li>
