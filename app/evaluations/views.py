@@ -144,7 +144,7 @@ def quiz(request, quiz_id):
         totalScore = 0
         if not pendingQuiz:
             for quiz in quizes:
-                totalScore += quiz.score
+                totalScore += quiz.score * quiz.quiz_category.weight
             quiz.evaluation.score = totalScore
             quiz.evaluation.save(update_fields=["score"])
         return redirect('/evaluations/quizselector')
