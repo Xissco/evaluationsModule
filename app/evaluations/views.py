@@ -111,7 +111,7 @@ def quiz(request, quiz_id):
             question_answer = QuestionAnswer(id=request.POST.get(keys.pop(0)), answer=answer)
             question_answer.save(update_fields=["answer"])
             question_answer = QuestionAnswer.objects.get(id=question_answer.id)
-            quizScore += answer.value * question_answer.question.value
+            quizScore += answer.value
             maxQuizScore += question_answer.question.answer_set.max_value
         quiz = Quiz.objects.get(id=quizid)
         quiz.quiz_state = 2

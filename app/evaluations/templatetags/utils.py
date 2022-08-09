@@ -1,7 +1,6 @@
 import decimal
 
 from django import template
-from evaluations.models import Answer
 
 register = template.Library()
 
