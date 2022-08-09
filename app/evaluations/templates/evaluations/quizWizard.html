@@ -3,7 +3,7 @@
 {% load utils %}
 
 {% block wizard %}
-    <input type="hidden" name="quiz-TOTAL_FORMS" value="2" id="id_quiz-TOTAL_FORMS">
+    <input type="hidden" name="quiz-TOTAL_FORMS" value="{{ len_quiz_type }}" id="id_quiz-TOTAL_FORMS">
     <input type="hidden" name="quiz-INITIAL_FORMS" value="0" id="id_quiz-INITIAL_FORMS">
     <input type="hidden" name="quiz-MIN_NUM_FORMS" value="0" id="id_quiz-MIN_NUM_FORMS">
     <input type="hidden" name="quiz-MAX_NUM_FORMS" value="1000" id="id_quiz-MAX_NUM_FORMS">
