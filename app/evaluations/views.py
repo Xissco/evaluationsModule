@@ -122,15 +122,15 @@ def quiz(request, quiz_id):
                 total_section_score = 0
                 for question in section.question.all():
                     question_answer = QuestionAnswer.objects.get(quiz=quiz, question=question)
-                    total_section_score += question_answer.answer.value
+                    total_section_score += question_answer.answer.value * question.value
                 section_score = SectionScore.objects.get(quiz=quiz, question_section=section)
                 section_score.value = total_section_score
                 section_score.save(update_fields=["value"])
-                total_category_score += total_section_score
+                total_category_score += total_section_score * section.value
             category_score = CategoryScore.objects.get(quiz=quiz, question_category=category)
-            category_score.value = total_category_score
+            category_score.value = total_category_score * category.value
             category_score.save(update_fields=["value"])
-            total_quiz_score += total_category_score
+            total_quiz_score += total_category_score * quiz.quiz_type.weight
         quiz = Quiz.objects.get(id=quizid)
         quiz.quiz_state = 2
         quiz.score = total_quiz_score
