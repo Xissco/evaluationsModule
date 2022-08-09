@@ -130,7 +130,7 @@ def quiz(request, quiz_id):
             category_score = CategoryScore.objects.get(quiz=quiz, question_category=category)
             category_score.value = total_category_score
             category_score.save(update_fields=["value"])
-            total_quiz_score += total_category_score * quiz.quiz_type.weight
+            total_quiz_score += total_category_score
         quiz = Quiz.objects.get(id=quizid)
         quiz.quiz_state = 2
         quiz.score = total_quiz_score
