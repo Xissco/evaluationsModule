@@ -107,7 +107,6 @@ class EvaluationAdmin(admin.ModelAdmin):
 
 class AnswerInline(admin.TabularInline):
     model = Answer
-    readonly_fields = ('content', 'value')
 
 class AnswerSetAdmin(admin.ModelAdmin):
     inlines = [AnswerInline]
