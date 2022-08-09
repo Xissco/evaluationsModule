@@ -30,8 +30,11 @@ def getQuestionAnswerId(question_answer, question):
 def getCategoryTotal(quiz, category):
     TWOPLACES = decimal.Decimal(10) ** -2
     categoryScore = 0
+    max_get_category_score = 0
     for section in category.question_section.all():
         for question in section.question.all():
             for question_answer in question.answer.filter(quiz=quiz):
                 categoryScore += question_answer.answer.value
-    return (categoryScore * decimal.Decimal(25 / 6.0)).quantize(TWOPLACES)
+                max_get_category_score += question_answer.question.answer_set.max_value
+    max_print_category_score = category.value * quiz.evaluation.evaluation_process.max_score
+    return categoryScore * max_print_category_score / max_get_category_score
