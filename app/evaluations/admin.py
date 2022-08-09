@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import EvaluationProcess, QuizType, QuestionCategory, QuestionSection, Question, AnswerSet, Answer, \
-    Evaluation, Quiz, QuestionAnswer
+    Evaluation, Quiz, QuestionAnswer, SectionScore, CategoryScore
 
 
 # Register your models here.
@@ -85,9 +85,17 @@ class QuestionAnswerInline(admin.TabularInline):
     model = QuestionAnswer
     readonly_fields = ('question', 'answer')
 
+class ScoreSectionInline(admin.TabularInline):
+    model = SectionScore
+    # readonly_fields = ('question', 'answer')
+
+class ScoreCategoryInline(admin.TabularInline):
+    model = CategoryScore
+    # readonly_fields = ('question', 'answer')
+
 class QuizAdmin(admin.ModelAdmin):
     readonly_fields = ('quiz_type', 'evaluation', 'evaluator', 'score', 'created', 'updated')
-    inlines = [QuestionAnswerInline]
+    inlines = [QuestionAnswerInline, ScoreCategoryInline, ScoreSectionInline]
 
 class QuizInline(admin.TabularInline):
     model = Quiz

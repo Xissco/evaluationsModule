@@ -115,6 +115,7 @@ def quiz(request, quiz_id):
             answer = Answer.objects.get(id=answerId)
             question_answer = QuestionAnswer(id=request.POST.get(keys.pop(0)), answer=answer)
             question_answer.save(update_fields=["answer"])
+        total_quiz_score = 0
         for category in quiz.quiz_type.question_category.all():
             total_category_score = 0
             for section in category.question_section.all():
@@ -122,14 +123,15 @@ def quiz(request, quiz_id):
                 for question in section.question.all():
                     question_answer = QuestionAnswer.object.get(quiz=quiz, question=question)
                     total_section_score += question_answer.answer.value
-                section_score = SectionScore(quiz=quiz, section=section, value=total_section_score)
+                section_score = SectionScore(quiz=quiz, question_section=section, value=total_section_score)
                 section_score.save()
                 total_category_score += total_section_score
-            category_score = CategoryScore(quiz=quiz, category=category, value=total_category_score)
+            category_score = CategoryScore(quiz=quiz, question_category=category, value=total_category_score)
             category_score.save()
+            total_quiz_score += total_category_score
         quiz = Quiz.objects.get(id=quizid)
         quiz.quiz_state = 2
-        quiz.score = quizScore * quiz.getMaxScore / maxQuizScore
+        quiz.score = total_quiz_score
         quiz.save(update_fields=["quiz_state", "score"])
         pendingQuiz = False
         quizes = quiz.evaluation.quizes.all()
