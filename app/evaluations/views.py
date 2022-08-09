@@ -37,7 +37,8 @@ class ApplicationWizardView(SessionWizardView):
             evaluation_data = self.storage.get_step_data('evaluation')
             evaluation_process = EvaluationProcess.objects.get(id=int(evaluation_data['evaluation-evaluation_process']))
             quiz_type = evaluation_process.quiz_type.all()
-            context.update({'quiz_types': quiz_type})
+            quiz_type_len = len(quiz_type)
+            context.update({'quiz_types': quiz_type, 'len_quiz_type': quiz_type_len})
         return context
 
     def done(self, form_list, **kwargs):
@@ -65,7 +66,16 @@ class ApplicationWizardView(SessionWizardView):
 def successful(request):
     return render(request, 'evaluations/successfull.html')
 
+
 # Create your views here.
+def evaluationSelector(request):
+    if not request.user.is_authenticated: return redirect('/')
+    if not request.user.is_staff: return redirect('/')
+    evaluation_process = EvaluationProcess.objects.all()
+    print(evaluation_process)
+    return render(request, 'evaluations/evaluationselector.html', {'evaluation_process': evaluation_process})
+
+
 def quizSelector(request):
     if not request.user.is_authenticated: return redirect('/')
     evaluator = Employee.objects.get(user=request.user)
@@ -75,12 +85,13 @@ def quizSelector(request):
     return render(request, 'evaluations/quizSelector.html', context)
 
 
-def quizState(request):
+def quizState(request, ep_id):
     if not request.user.is_authenticated: return redirect('/')
     if not request.user.is_staff: return redirect('/')
-    evaluations = Evaluation.objects.all()
-    pendings = len(Quiz.objects.all().filter(quiz_state=1))
-    context = {'evaluations': evaluations, 'pendings': pendings}
+    evaluation_process = EvaluationProcess.objects.get(id=ep_id)
+    evaluations = evaluation_process.evaluations.all()
+    # pendings = len(evaluations..filter(quiz_state=1))
+    context = {'evaluation_process': evaluation_process , 'evaluations': evaluations, 'pendings': 1}
     return render(request, 'evaluations/quizState.html', context)
 
 
@@ -131,3 +142,15 @@ def quizResult(request, quiz_id):
     quiz = get_object_or_404(Quiz, id=quiz_id)
     question_answer = QuestionAnswer.objects.filter(quiz=quiz)
     return render(request, 'evaluations/quizresult.html', {'quiz': quiz, 'answer': question_answer})
+
+
+def evaluationChart(request, ep_id):
+    evaluation_process = EvaluationProcess.objects.get(id=ep_id)
+    evaluated = []
+    score = []
+    color = []
+    for evaluation in evaluation_process.evaluations.all():
+        evaluated.append(str(evaluation.evaluated))
+        score.append(float(evaluation.score))
+    context = {'evaluated': evaluated, 'score': score}
+    return render(request, 'evaluations/evaluationChart.html', context)

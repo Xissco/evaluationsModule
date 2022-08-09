@@ -2,8 +2,35 @@
 
 {% block title %} Quiz State {% endblock %}
 
-{% block header %} Estado de Evaluaciones {% endblock %}
 
 {% block content %}
-    <h3> Creado Correctamente </h3>
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section style="text-align:center   " class="content">
+        <div>
+            <h2 class="headline text-success"> ✓</h2>
+            <div class="error-content">
+                <h3> Evaluación Creada Exitosamente</h3>
+                <p>
+                    Para regresar Click <a href="/evaluations/quizcreator">aqui</a>
+                </p>
+                <form class="search-form">
+                    <div class="input-group">
+                        <div class="input-group-append">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
 {% endblock %}

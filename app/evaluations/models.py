@@ -96,7 +96,7 @@ class QuizType(BaseModel):
 class EvaluationProcess(BaseModel):
     name = models.CharField(max_length=100, verbose_name='Proceso')
     quiz_type = models.ManyToManyField(QuizType, verbose_name='Tipos de Evaluacion')
-    max_score = models.DecimalField(max_digits=4, decimal_places=2, default=0, verbose_name='Nota Maxima')
+    max_score = models.DecimalField(max_digits=5, decimal_places=2, default=0, verbose_name='Nota Maxima')
 
     class Meta:
         verbose_name = "Proceso de Evaluación"
@@ -108,7 +108,7 @@ class EvaluationProcess(BaseModel):
 
 
 class Evaluation(BaseModel):
-    evaluation_process = models.ForeignKey(EvaluationProcess, verbose_name="Proceso de Evaluacion", on_delete=models.CASCADE)
+    evaluation_process = models.ForeignKey(EvaluationProcess, verbose_name="Proceso de Evaluacion", on_delete=models.CASCADE, related_name="evaluations")
     evaluated = models.ForeignKey(Employee, verbose_name="Evaluado", on_delete=models.CASCADE)
     score = models.DecimalField(max_digits=4, decimal_places=2, default=0, verbose_name='Total')
 

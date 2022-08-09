@@ -14,9 +14,9 @@ def loginView(request):
         password = form.cleaned_data.get("password")
         user = authenticate(username=username, password=password)
         login(request, user)
-        return redirect('evaluations/quizstate') if user.is_staff else redirect('evaluations/quizselector')
+        return redirect('evaluations/evaluationselector') if user.is_staff else redirect('evaluations/quizselector')
     if request.user.is_authenticated:
-        return redirect('evaluations/quizstate') if request.user.is_staff else redirect('evaluations/quizselector')
+        return redirect('evaluations/evaluationselector') if request.user.is_staff else redirect('evaluations/quizselector')
     context = {'form': form, }
     return render(request, 'core/login.html', context)
 

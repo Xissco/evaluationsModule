@@ -1,0 +1,45 @@
+{% extends 'core/base.html' %}
+
+{% block title %} Quiz State {% endblock %}
+
+{% block header %} Seleccione Proceso Evaluativo {% endblock %}
+
+{% block content %}
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Seleccione el proceso de evaluacion</h3>
+                        </div>
+
+                        <div class="card-body">
+                            <table id="example2" class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Proceso de evaluación</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for evaluationProcess in evaluation_process %}
+                                        <tr>
+                                            <td>
+                                                <a href="{% url 'State' evaluationProcess.id %}">{{ evaluationProcess }}</a>
+                                            </td>
+                                        </tr>
+                                {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>Proceso de Evaluacion</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
