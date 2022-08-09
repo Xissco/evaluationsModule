@@ -7,7 +7,8 @@ from formtools.wizard.views import SessionWizardView
 # from .forms import quizForm
 from hr.models import Employee
 from evaluations.forms import quizCreatorView1, quizCreatorView2
-from evaluations.models import Evaluation, EvaluationProcess, Quiz, QuizType, QuestionAnswer, Answer
+from evaluations.models import Evaluation, EvaluationProcess, Quiz, QuizType, QuestionAnswer, Answer, CategoryScore, \
+    SectionScore
 from decimal import Decimal
 
 FORMS = [("evaluation", quizCreatorView1),
@@ -56,7 +57,11 @@ class ApplicationWizardView(SessionWizardView):
             quiz = Quiz(evaluator=evaluator['evaluator'], quiz_state='1', quiz_type=quiz_type, evaluation=evaluation)
             quiz.save()
             for category in quiz_type.question_category.all():
+                category_score = CategoryScore(quiz=quiz, question_category=category)
+                category_score.save()
                 for section in category.question_section.all():
+                    section_score = SectionScore(quiz=quiz, question_section=section)
+                    section_score.save()
                     for question in section.question.all():
                         question_answer = QuestionAnswer(quiz=quiz, question=question)
                         question_answer.save()
@@ -110,9 +115,18 @@ def quiz(request, quiz_id):
             answer = Answer.objects.get(id=answerId)
             question_answer = QuestionAnswer(id=request.POST.get(keys.pop(0)), answer=answer)
             question_answer.save(update_fields=["answer"])
-            question_answer = QuestionAnswer.objects.get(id=question_answer.id)
-            quizScore += answer.value
-            maxQuizScore += question_answer.question.answer_set.max_value
+        for category in quiz.quiz_type.question_category.all():
+            total_category_score = 0
+            for section in category.question_section.all():
+                total_section_score = 0
+                for question in section.question.all():
+                    question_answer = QuestionAnswer.object.get(quiz=quiz, question=question)
+                    total_section_score += question_answer.answer.value
+                section_score = SectionScore(quiz=quiz, section=section, value=total_section_score)
+                section_score.save()
+                total_category_score += total_section_score
+            category_score = CategoryScore(quiz=quiz, category=category, value=total_category_score)
+            category_score.save()
         quiz = Quiz.objects.get(id=quizid)
         quiz.quiz_state = 2
         quiz.score = quizScore * quiz.getMaxScore / maxQuizScore

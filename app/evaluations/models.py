@@ -153,3 +153,13 @@ class QuestionAnswer(BaseModel):
     quiz = models.ForeignKey(Quiz, verbose_name="Encuesta", on_delete=models.CASCADE, related_name="answer")
     question = models.ForeignKey(Question, verbose_name="Pregunta", on_delete=models.CASCADE, related_name="answer")
     answer = models.ForeignKey(Answer, verbose_name="Respuesta", on_delete=models.CASCADE, null=True, blank=True)
+
+class SectionScore(BaseModel):
+    quiz = models.ForeignKey(Quiz, verbose_name="Encuesta", on_delete=models.CASCADE)
+    question_section = models.ForeignKey(QuestionSection, verbose_name="Seccion de pregunta", on_delete=models.CASCADE)
+    value = models.DecimalField(max_digits=4, decimal_places=2, default=0, verbose_name='Total')
+
+class CategoryScore(BaseModel):
+    quiz = models.ForeignKey(Quiz, verbose_name="Encuesta", on_delete=models.CASCADE)
+    question_category = models.ForeignKey(QuestionCategory, verbose_name="Categoria de pregunta", on_delete=models.CASCADE)
+    value = models.DecimalField(max_digits=4, decimal_places=2, default=0, verbose_name='Total')
