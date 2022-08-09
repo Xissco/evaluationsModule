@@ -99,7 +99,7 @@ class QuizAdmin(admin.ModelAdmin):
 
 class QuizInline(admin.TabularInline):
     model = Quiz
-    readonly_fields = ('evaluator', 'quiz_state', 'getWeight', 'score', 'getMaxScore', 'quiz_type')
+    readonly_fields = ('evaluator', 'quiz_state', 'getWeight', 'score', 'getQuizMaxScore', 'quiz_type')
 
 class EvaluationAdmin(admin.ModelAdmin):
     readonly_fields = ('evaluation_process', 'evaluated', 'score', 'created', 'updated')
