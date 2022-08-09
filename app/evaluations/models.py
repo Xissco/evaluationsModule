@@ -124,7 +124,7 @@ class Evaluation(BaseModel):
 class Quiz(BaseModel):
     evaluator = models.ForeignKey(Employee, verbose_name='Evaluador', on_delete=models.CASCADE)
     quiz_state = models.CharField(max_length=100, choices=(('1', 'Pendiente'), ('2', 'Realizado')), default='1')
-    score = models.DecimalField(max_digits=4, decimal_places=2, default=0, verbose_name='Total')
+    score = models.DecimalField(max_digits=5, decimal_places=2, default=0, verbose_name='Total')
     quiz_type = models.ForeignKey(QuizType, verbose_name="Tipo de Evaluacion", on_delete=models.CASCADE)
     evaluation = models.ForeignKey(Evaluation, verbose_name='Evaluación', on_delete=models.CASCADE, related_name='quizes')
 
