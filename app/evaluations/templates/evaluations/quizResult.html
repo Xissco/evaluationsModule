@@ -60,10 +60,14 @@
                                         <td>{{ answer | getAnswerValue:question }}</td>
                                     </tr>
                                 {% endfor %}
+                                <tr>
+                                <td><strong>Total Sección:</strong></td>
+                                <td>{{ quiz.section_scores | getSectionScore:section }} / {% getSectionScore quiz category section %}</td>
+                            </tr>
                             {% endfor %}
                             <tr>
-                                <td><strong>Total</strong></td>
-                                <td>{{ quiz | getCategoryTotal:category }}</td>
+                                <td><strong>Total Categoria:</strong></td>
+                                <td>{{ quiz.category_scores | getCategoryScore:category }} / {{ quiz | getMaxCategoryScore:category }}</td>
                             </tr>
                             </tbody>
                             </table>
@@ -76,7 +80,7 @@
                     <tr>
                         <td></td>
                         <td>Total de la Evaluacion</td>
-                        <td>{{ quiz.score }} / {{ quiz.getMaxScore }}</td>
+                        <td>{{ quiz.score }} / {{ quiz.evaluation.evaluation_process.max_score }}</td>
                         <td></td>
                     </tr>
                     <tr>

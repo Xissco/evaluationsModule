@@ -128,18 +128,19 @@ def quiz(request, quiz_id):
                     total_section_score += question_answer.answer.value * question.value
                     max_section_score += question.answer_set.max_value
                 section_score = SectionScore.objects.get(quiz=quiz, question_section=section)
-                section_score.value = total_section_score * quiz.getSectionMaxScore / max_section_score
+                section_score.value = total_section_score * quiz.getSectionMaxScore(category, section) / max_section_score
                 section_score.save(update_fields=["value"])
                 total_category_score += total_section_score * section.value
-                max_category_score += max_section_score
+                max_category_score += max_section_score * section.value
             category_score = CategoryScore.objects.get(quiz=quiz, question_category=category)
-            category_score.value = total_category_score * quiz.getCategoryMaxScore / max_category_score
+            print(category, total_category_score, quiz.getCategoryMaxScore(category), max_category_score)
+            category_score.value = total_category_score * quiz.getCategoryMaxScore(category) / max_category_score
             category_score.save(update_fields=["value"])
             total_quiz_score += total_category_score * category.value
-            max_quiz_score += max_category_score
+            max_quiz_score += max_category_score * category.value
         quiz = Quiz.objects.get(id=quizid)
         quiz.quiz_state = 2
-        quiz.score = total_quiz_score * quiz.getQuizMaxScore / max_quiz_score
+        quiz.score = total_quiz_score * quiz.getQuizMaxScore() / max_quiz_score
         quiz.save(update_fields=["quiz_state", "score"])
         pendingQuiz = False
         quizes = quiz.evaluation.quizes.all()
@@ -150,7 +151,7 @@ def quiz(request, quiz_id):
         totalScore = 0
         if not pendingQuiz:
             for quiz in quizes:
-                totalScore += quiz.score * quiz.quiz_category.weight
+                totalScore += quiz.score * quiz.quiz_type.weight
             quiz.evaluation.score = totalScore
             quiz.evaluation.save(update_fields=["score"])
         return redirect('/evaluations/quizselector')

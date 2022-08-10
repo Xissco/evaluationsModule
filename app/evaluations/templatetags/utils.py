@@ -26,14 +26,19 @@ def getQuestionAnswerId(question_answer, question):
     return question_answer_id.id
 
 @register.filter()
-def getCategoryTotal(quiz, category):
-    TWOPLACES = decimal.Decimal(10) ** -2
-    categoryScore = 0
-    max_get_category_score = 0
-    for section in category.question_section.all():
-        for question in section.question.all():
-            for question_answer in question.answer.filter(quiz=quiz):
-                categoryScore += question_answer.answer.value
-                max_get_category_score += question_answer.question.answer_set.max_value
-    max_print_category_score = category.value * quiz.evaluation.evaluation_process.max_score
-    return categoryScore * max_print_category_score / max_get_category_score
+def getSectionScore(section_scores, section):
+    section_score = section_scores.get(question_section=section)
+    return section_score.value
+
+@register.filter()
+def getCategoryScore(category_scores, category):
+    category_score = category_scores.get(question_category=category)
+    return category_score.value
+
+@register.filter()
+def getMaxCategoryScore(quiz, category):
+    return quiz.getCategoryMaxScore(category)
+
+@register.simple_tag
+def getSectionScore(quiz, category, section):
+    return quiz.getSectionMaxScore(category, section)

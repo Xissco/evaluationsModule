@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.db import models
 from hr.models import Employee
 
@@ -139,17 +141,16 @@ class Quiz(BaseModel):
     def getWeight(self):
         return self.quiz_type.weight
 
-    @property
     def getQuizMaxScore(self):
         return self.evaluation.evaluation_process.max_score * self.quiz_type.weight
 
-    @property
-    def getCategoryMaxScore(self):
-        return self.getQuizMaxScore * self.quiz_type.question_category.value
+    def getCategoryMaxScore(self, category):
+        TWOPLACES = Decimal(10) ** -2
+        return (self.getQuizMaxScore() * category.value).quantize(TWOPLACES)
 
-    @property
-    def getSectionMaxScore(self):
-        return self.getCategoryMaxScore * self.quiz_type.question_category.question_section.value
+    def getSectionMaxScore(self, category, section):
+        TWOPLACES = Decimal(10) ** -2
+        return (self.getCategoryMaxScore(category) * section.value).quantize(TWOPLACES)
 
     @property
     def getState(self):
@@ -162,11 +163,11 @@ class QuestionAnswer(BaseModel):
     answer = models.ForeignKey(Answer, verbose_name="Respuesta", on_delete=models.CASCADE, null=True, blank=True)
 
 class SectionScore(BaseModel):
-    quiz = models.ForeignKey(Quiz, verbose_name="Encuesta", on_delete=models.CASCADE)
+    quiz = models.ForeignKey(Quiz, verbose_name="Encuesta", on_delete=models.CASCADE, related_name="section_scores")
     question_section = models.ForeignKey(QuestionSection, verbose_name="Seccion de pregunta", on_delete=models.CASCADE)
-    value = models.DecimalField(max_digits=4, decimal_places=2, default=0, verbose_name='Total')
+    value = models.DecimalField(max_digits=5, decimal_places=2, default=0, verbose_name='Total')
 
 class CategoryScore(BaseModel):
-    quiz = models.ForeignKey(Quiz, verbose_name="Encuesta", on_delete=models.CASCADE)
+    quiz = models.ForeignKey(Quiz, verbose_name="Encuesta", on_delete=models.CASCADE, related_name="category_scores")
     question_category = models.ForeignKey(QuestionCategory, verbose_name="Categoria de pregunta", on_delete=models.CASCADE)
-    value = models.DecimalField(max_digits=4, decimal_places=2, default=0, verbose_name='Total')
+    value = models.DecimalField(max_digits=5, decimal_places=2, default=0, verbose_name='Total')
