@@ -80,7 +80,7 @@
                     <tr>
                         <td></td>
                         <td>Total de la Evaluacion</td>
-                        <td>{{ quiz.score }} / {{ quiz.evaluation.evaluation_process.max_score }}</td>
+                        <td>{{ quiz.score }} / {{ quiz | getMaxQuizScore }}</td>
                         <td></td>
                     </tr>
                     <tr>

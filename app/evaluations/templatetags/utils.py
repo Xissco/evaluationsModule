@@ -42,3 +42,7 @@ def getMaxCategoryScore(quiz, category):
 @register.simple_tag
 def getSectionScore(quiz, category, section):
     return quiz.getSectionMaxScore(category, section)
+
+@register.filter()
+def getMaxQuizScore(quiz):
+    return quiz.getQuizMaxScore()

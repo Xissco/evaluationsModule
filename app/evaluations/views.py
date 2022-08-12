@@ -126,14 +126,13 @@ def quiz(request, quiz_id):
                 for question in section.question.all():
                     question_answer = QuestionAnswer.objects.get(quiz=quiz, question=question)
                     total_section_score += question_answer.answer.value * question.value
-                    max_section_score += question.answer_set.max_value
+                    max_section_score += question.answer_set.max_value * question.value
                 section_score = SectionScore.objects.get(quiz=quiz, question_section=section)
                 section_score.value = total_section_score * quiz.getSectionMaxScore(category, section) / max_section_score
                 section_score.save(update_fields=["value"])
                 total_category_score += total_section_score * section.value
                 max_category_score += max_section_score * section.value
             category_score = CategoryScore.objects.get(quiz=quiz, question_category=category)
-            print(category, total_category_score, quiz.getCategoryMaxScore(category), max_category_score)
             category_score.value = total_category_score * quiz.getCategoryMaxScore(category) / max_category_score
             category_score.save(update_fields=["value"])
             total_quiz_score += total_category_score * category.value

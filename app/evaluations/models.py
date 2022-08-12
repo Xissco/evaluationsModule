@@ -142,7 +142,8 @@ class Quiz(BaseModel):
         return self.quiz_type.weight
 
     def getQuizMaxScore(self):
-        return self.evaluation.evaluation_process.max_score * self.quiz_type.weight
+        TWOPLACES = Decimal(10) ** -2
+        return (self.evaluation.evaluation_process.max_score * self.quiz_type.weight).quantize(TWOPLACES)
 
     def getCategoryMaxScore(self, category):
         TWOPLACES = Decimal(10) ** -2
